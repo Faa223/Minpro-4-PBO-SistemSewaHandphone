@@ -75,10 +75,10 @@ public class View {
         System.out.println("\n========================================");
         System.out.println("     SISTEM SEWA HANDPHONE");
         System.out.println("========================================");
-        System.out.println("Total Handphone : " + controller.getDaftarHandphone().size());
+        System.out.println("Total Handphone : " + controller.getDaftarHandphone().length);
         System.out.println("HP Tersedia     : " + controller.hitungHPTersedia());
         System.out.println("Sedang Disewa   : " + controller.hitungHPDisewa());
-        System.out.println("Total Pelanggan : " + controller.getDaftarPelanggan().size());
+        System.out.println("Total Pelanggan : " + controller.getDaftarPelanggan().length);
         System.out.println("Sewa Aktif      : " + controller.hitungSewaAktif());
     }
 
@@ -185,7 +185,7 @@ public class View {
     private void tampilkanHandphone() {
         System.out.println("\n=== DAFTAR HANDPHONE ===");
 
-        if (controller.getDaftarHandphone().isEmpty()) {
+        if (controller.getDaftarHandphone().length == 0) {
             System.out.println("Belum ada data handphone.");
             return;
         }
@@ -213,7 +213,7 @@ public class View {
     private void ubahHandphone() {
         tampilkanHandphone();
 
-        if (controller.getDaftarHandphone().isEmpty()) {
+        if (controller.getDaftarHandphone().length == 0) {
             return;
         }
 
@@ -290,7 +290,7 @@ public class View {
     private void hapusHandphone() {
         tampilkanHandphone();
 
-        if (controller.getDaftarHandphone().isEmpty()) {
+        if (controller.getDaftarHandphone().length == 0) {
             return;
         }
 
@@ -447,7 +447,7 @@ public class View {
     private void tampilkanPelanggan() {
         System.out.println("\n=== DAFTAR PELANGGAN ===");
 
-        if (controller.getDaftarPelanggan().isEmpty()) {
+        if (controller.getDaftarPelanggan().length == 0) {
             System.out.println("Belum ada data pelanggan.");
             return;
         }
@@ -472,7 +472,7 @@ public class View {
     private void ubahPelanggan() {
         tampilkanPelanggan();
 
-        if (controller.getDaftarPelanggan().isEmpty()) {
+        if (controller.getDaftarPelanggan().length == 0) {
             return;
         }
 
@@ -560,7 +560,7 @@ public class View {
     private void hapusPelanggan() {
         tampilkanPelanggan();
 
-        if (controller.getDaftarPelanggan().isEmpty()) {
+        if (controller.getDaftarPelanggan().length == 0) {
             return;
         }
 
@@ -599,7 +599,7 @@ public class View {
     private void menuPenyewaan() {
         System.out.println("\n=== PENYEWAAN HANDPHONE ===");
 
-        if (controller.getDaftarPelanggan().isEmpty()) {
+        if (controller.getDaftarPelanggan().length == 0) {
             System.out.println("Belum ada pelanggan.");
             return;
         }
@@ -835,7 +835,7 @@ public class View {
     private void tampilkanSemuaSewa() {
         System.out.println("\n=== RIWAYAT PENYEWAAN ===");
 
-        if (controller.getDaftarSewa().isEmpty()) {
+        if (controller.getDaftarSewa().length == 0) {
             System.out.println("Belum ada transaksi penyewaan.");
             return;
         }

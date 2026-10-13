@@ -18,6 +18,12 @@ public class SewaMingguan extends Sewa {
         setTotalBiaya(hitungTotal());
     }
 
+    public SewaMingguan(String idSewa, Pelanggan pelanggan, Handphone handphone,
+                    int jumlahMinggu, String status, double totalBiaya) {
+    super(idSewa, pelanggan, handphone, status, totalBiaya);
+    this.jumlahMinggu = jumlahMinggu;
+}
+    
     public int getJumlahMinggu() {
         return jumlahMinggu;
     }

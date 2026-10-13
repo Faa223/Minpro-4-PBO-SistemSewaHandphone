@@ -26,6 +26,13 @@ public abstract class Sewa {
         this.status = "AKTIF";
     }
 
+    public Sewa(String idSewa, Pelanggan pelanggan, Handphone handphone,
+                String status, double totalBiaya) {
+        this(idSewa, pelanggan, handphone);
+        setStatus(status);
+        this.totalBiaya = totalBiaya;
+    }
+
     public String getIdSewa() {
         return idSewa;
     }

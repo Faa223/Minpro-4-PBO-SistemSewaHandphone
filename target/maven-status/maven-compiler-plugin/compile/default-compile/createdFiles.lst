@@ -1,10 +1,14 @@
+dao\SewaDAO.class
 model\SewaMingguan.class
 controller\CrudPelanggan.class
 controller\Controller.class
 model\Sewa.class
 view\View.class
-model\SewaHarian.class
+dao\PelangganDAO.class
 model\Handphone.class
 model\Pelanggan.class
 main\Main.class
+dao\HandphoneDAO.class
+model\SewaHarian.class
+database\Koneksi.class
 controller\CrudHandphone.class

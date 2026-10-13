@@ -1,4 +1,4 @@
-package controller;
+    package controller;
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -11,6 +11,7 @@ import model.Handphone;
  *
  * @author ASUS
  */
+
 public interface CrudHandphone {
 
     Handphone tambahHandphone(String merk, String tipe, double harga);
@@ -21,5 +22,5 @@ public interface CrudHandphone {
 
     boolean hapusHandphone(String kodeHP);
 
-    ArrayList<Handphone> getDaftarHandphone();
+    Handphone[] getDaftarHandphone();
 }

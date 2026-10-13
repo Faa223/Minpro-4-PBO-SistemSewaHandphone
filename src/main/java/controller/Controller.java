@@ -4,379 +4,192 @@
  */
 package controller;
 
-import java.util.ArrayList;
+import dao.HandphoneDAO;
+import dao.PelangganDAO;
+import dao.SewaDAO;
 import model.Handphone;
 import model.Pelanggan;
 import model.Sewa;
 import model.SewaHarian;
 import model.SewaMingguan;
-
 /**
  *
  * @author ASUS
  */
 public class Controller implements CrudHandphone, CrudPelanggan {
-    private final ArrayList<Handphone> daftarHandphone;
-    private final ArrayList<Pelanggan> daftarPelanggan;
-    private final ArrayList<Sewa> daftarSewa;
-    private int nomorHP;
-    private int nomorPelanggan;
-    private int nomorSewa;
+    private final HandphoneDAO hpDAO = new HandphoneDAO();
+    private final PelangganDAO pelangganDAO = new PelangganDAO();
+    private final SewaDAO sewaDAO = new SewaDAO();
 
-    public Controller() {
-        daftarHandphone = new ArrayList<>();
-        daftarPelanggan = new ArrayList<>();
-        daftarSewa = new ArrayList<>();
-        nomorHP = 1;
-        nomorPelanggan = 1;
-        nomorSewa = 1;
-        isiDataAwal();
-    }
-
-    private void isiDataAwal() {
-        tambahHandphone("Samsung", "Galaxy S23", 100000);
-        tambahHandphone("Apple", "iPhone 14", 150000);
-        tambahHandphone("Xiaomi", "Redmi Note 13", 75000);
-        tambahPelanggan("Pompom", "081234567890", "6472010101010001");
-        tambahPelanggan("Yahya SOTM", "082345678901", "6472010202020002");
-    }
-
-    private String generateKodeHP() {
-        String kode = String.format("HP%03d", nomorHP);
-        nomorHP++;
-        return kode;
-    }
-
-    private String generateIdPelanggan() {
-        String id = String.format("P%03d", nomorPelanggan);
-        nomorPelanggan++;
-        return id;
-    }
-
-    private String generateIdSewa() {
-        String id = String.format("SW%03d", nomorSewa);
-        nomorSewa++;
-        return id;
-    }
-    
+    // ================= HANDPHONE =================
     @Override
-    public ArrayList<Handphone> getDaftarHandphone() {
-        return daftarHandphone;
-    }
-    @Override
-    public ArrayList<Pelanggan> getDaftarPelanggan() {
-        return daftarPelanggan;
+    public Handphone[] getDaftarHandphone() {
+        return hpDAO.findAll();
     }
 
-    public ArrayList<Sewa> getDaftarSewa() {
-        return daftarSewa;
-    }
-    
     @Override
     public Handphone tambahHandphone(String merk, String tipe, double harga) {
-        if (!Handphone.validasiMerk(merk) || !Handphone.validasiTipe(tipe) || !Handphone.validasiHargaSewa(harga)) {
+        if (!Handphone.validasiMerk(merk) || !Handphone.validasiTipe(tipe)
+                || !Handphone.validasiHargaSewa(harga)) {
             return null;
         }
-
-        Handphone hp = new Handphone(generateKodeHP(), merk, tipe, harga);
-        daftarHandphone.add(hp);
-        return hp;
+        Handphone hp = new Handphone(hpDAO.generateKode(), merk, tipe, harga);
+        return hpDAO.insert(hp) ? hp : null;
     }
-    
-        @Override
+
+    @Override
     public Handphone cariHandphone(String kodeHP) {
-        if (kodeHP == null) {
-            return null;
-        }
-
-        for (Handphone hp : daftarHandphone) {
-            if (hp.getKodeHP().equalsIgnoreCase(kodeHP.trim())) {
-                return hp;
-            }
-        }
-
-        return null;
+        return hpDAO.findByKode(kodeHP);
     }
-    
+
     @Override
     public boolean ubahHandphone(String kodeHP, String merk, String tipe, double harga) {
-    Handphone hp = cariHandphone(kodeHP);
-
-    if (hp == null) {
-        return false;
-    }
-
-    if (!Handphone.validasiMerk(merk)
-            || !Handphone.validasiTipe(tipe)
-            || !Handphone.validasiHargaSewa(harga)) {
-        return false;
-    }
-
-    hp.setMerk(merk);
-    hp.setTipe(tipe);
-    hp.setHargaSewa(harga);
-
-    return true;
-}
-    
-    public boolean handphonePunyaRiwayat(String kodeHP) {
-        for (Sewa sewa : daftarSewa) {
-            if (sewa.getHandphone().getKodeHP().equalsIgnoreCase(kodeHP)) {
-                return true;
-            }
+        Handphone hp = cariHandphone(kodeHP);
+        if (hp == null || hp.getStatus().equals("DISEWA")) return false;
+        if (!Handphone.validasiMerk(merk) || !Handphone.validasiTipe(tipe)
+                || !Handphone.validasiHargaSewa(harga)) {
+            return false;
         }
-
-        return false;
+        hp.setMerk(merk);
+        hp.setTipe(tipe);
+        hp.setHargaSewa(harga);
+        return hpDAO.update(hp);
     }
+
+    public boolean handphonePunyaRiwayat(String kodeHP) {
+        return sewaDAO.adaRiwayatHP(kodeHP);
+    }
+
     @Override
     public boolean hapusHandphone(String kodeHP) {
-        Handphone hp = cariHandphone(kodeHP);
+        if (cariHandphone(kodeHP) == null || handphonePunyaRiwayat(kodeHP)) return false;
+        return hpDAO.delete(kodeHP.trim());
+    }
 
-        if (hp == null) {
+    // ================= PELANGGAN =================
+    @Override
+    public Pelanggan[] getDaftarPelanggan() {
+        return pelangganDAO.findAll();
+    }
+
+    @Override
+    public Pelanggan tambahPelanggan(String nama, String noHP, String nik) {
+        if (!Pelanggan.validasiNama(nama) || !Pelanggan.validasiNoHP(noHP)
+                || !Pelanggan.validasiNIK(nik)) {
+            return null;
+        }
+        if (noHPSudahAda(noHP) || nikSudahAda(nik)) return null;
+
+        Pelanggan p = new Pelanggan(pelangganDAO.generateId(), nama, noHP, nik);
+        return pelangganDAO.insert(p) ? p : null;
+    }
+
+    @Override
+    public Pelanggan cariPelanggan(String idPelanggan) {
+        return pelangganDAO.findById(idPelanggan);
+    }
+
+    @Override
+    public boolean ubahPelanggan(String idPelanggan, String nama, String noHP, String nik) {
+        Pelanggan p = cariPelanggan(idPelanggan);
+        if (p == null) return false;
+        if (!Pelanggan.validasiNama(nama) || !Pelanggan.validasiNoHP(noHP)
+                || !Pelanggan.validasiNIK(nik)) {
             return false;
         }
-
-        if (handphonePunyaRiwayat(kodeHP)) {
+        if (noHPSudahAdaSelain(noHP, idPelanggan) || nikSudahAdaSelain(nik, idPelanggan)) {
             return false;
         }
-
-        daftarHandphone.remove(hp);
-        return true;
-    }
-    @Override
-    public Pelanggan tambahPelanggan(String nama, String noHP, String nik) {
-        if (!Pelanggan.validasiNama(nama) || !Pelanggan.validasiNoHP(noHP) || !Pelanggan.validasiNIK(nik)) {
-            return null;
-        }
-
-        if (noHPSudahAda(noHP) || nikSudahAda(nik)) {
-            return null;
-        }
-
-        Pelanggan pelanggan = new Pelanggan(generateIdPelanggan(), nama, noHP, nik);
-        daftarPelanggan.add(pelanggan);
-        return pelanggan;
-    }
-    @Override
-    public Pelanggan cariPelanggan(String idPelanggan) {
-        if (idPelanggan == null) {
-            return null;
-        }
-        
-        for (Pelanggan pelanggan : daftarPelanggan) {
-            if (pelanggan.getIdPelanggan().equalsIgnoreCase(idPelanggan)) {
-                return pelanggan;
-            }
-        }
-
-        return null;
+        p.setNama(nama);
+        p.setNoHP(noHP);
+        p.setNik(nik);
+        return pelangganDAO.update(p);
     }
 
-    @Override
-public boolean ubahPelanggan(String idPelanggan, String nama, String noHP, String nik) {
-    Pelanggan pelanggan = cariPelanggan(idPelanggan);
-
-    if (pelanggan == null) {
-        return false;
-    }
-
-    if (!Pelanggan.validasiNama(nama)
-            || !Pelanggan.validasiNoHP(noHP)
-            || !Pelanggan.validasiNIK(nik)) {
-        return false;
-    }
-
-    if (noHPSudahAdaSelain(noHP, idPelanggan)
-            || nikSudahAdaSelain(nik, idPelanggan)) {
-        return false;
-    }
-
-    pelanggan.setNama(nama);
-    pelanggan.setNoHP(noHP);
-    pelanggan.setNik(nik);
-
-    return true;
-}
-    
     public boolean noHPSudahAda(String noHP) {
-        for (Pelanggan pelanggan : daftarPelanggan) {
-            if (pelanggan.getNoHP().equals(noHP)) {
-                return true;
-            }
-        }
-
-        return false;
+        return pelangganDAO.noHPSudahAda(noHP, "");
     }
 
-    public boolean noHPSudahAdaSelain(
-            String noHP,
-            String idPelanggan) {
-
-        for (Pelanggan pelanggan : daftarPelanggan) {
-            if (!pelanggan.getIdPelanggan().equalsIgnoreCase(idPelanggan) && pelanggan.getNoHP().equals(noHP)) {
-                return true;
-            }
-        }
-
-        return false;
+    public boolean noHPSudahAdaSelain(String noHP, String idPelanggan) {
+        return pelangganDAO.noHPSudahAda(noHP, idPelanggan);
     }
 
     public boolean nikSudahAda(String nik) {
-        for (Pelanggan pelanggan : daftarPelanggan) {
-            if (pelanggan.getNik().equals(nik)) {
-                return true;
-            }
-        }
-
-        return false;
+        return pelangganDAO.nikSudahAda(nik, "");
     }
 
     public boolean nikSudahAdaSelain(String nik, String idPelanggan) {
-        for (Pelanggan pelanggan : daftarPelanggan) {
-            if (!pelanggan.getIdPelanggan().equalsIgnoreCase(idPelanggan) && pelanggan.getNik().equals(nik)) {
-                return true;
-            }
-        }
-        
-        return false;
+        return pelangganDAO.nikSudahAda(nik, idPelanggan);
     }
 
     public boolean pelangganPunyaRiwayat(String idPelanggan) {
-        for (Sewa sewa : daftarSewa) {
-            if (sewa.getPelanggan().getIdPelanggan().equalsIgnoreCase(idPelanggan)) {
-                return true;
-            }
-        }
-        return false;
+        return sewaDAO.adaRiwayatPelanggan(idPelanggan);
     }
+
     @Override
     public boolean hapusPelanggan(String idPelanggan) {
-        Pelanggan pelanggan = cariPelanggan(idPelanggan);
+        if (cariPelanggan(idPelanggan) == null || pelangganPunyaRiwayat(idPelanggan)) return false;
+        return pelangganDAO.delete(idPelanggan.trim());
+    }
 
-        if (pelanggan == null) {
-            return false;
-        }
-
-        if (pelangganPunyaRiwayat(idPelanggan)) {
-            return false;
-        }
-
-        daftarPelanggan.remove(pelanggan);
-        return true;
+    // ================= SEWA =================
+    public Sewa[] getDaftarSewa() {
+        return sewaDAO.findAll();
     }
 
     public Sewa buatSewaHarian(String idPelanggan, String kodeHP, int jumlahHari) {
         Pelanggan pelanggan = cariPelanggan(idPelanggan);
         Handphone hp = cariHandphone(kodeHP);
 
-        if (pelanggan == null) {
-            return null;
-        }
+        if (pelanggan == null || hp == null) return null;
+        if (!hp.getStatus().equals("TERSEDIA")) return null;
+        if (!SewaHarian.validasiJumlahHari(jumlahHari)) return null;
 
-        if (hp == null) {
-            return null;
-        }
-
-        if (!hp.getStatus().equals("TERSEDIA")) {
-            return null;
-        }
-
-        if (!SewaHarian.validasiJumlahHari(jumlahHari)) {
-            return null;
-        }
-
-        SewaHarian sewa = new SewaHarian(generateIdSewa(), pelanggan, hp, jumlahHari);
-        daftarSewa.add(sewa);
-        hp.setStatus("DISEWA");
-        return sewa;
+        SewaHarian sewa = new SewaHarian(sewaDAO.generateId(), pelanggan, hp, jumlahHari);
+        return sewaDAO.insert(sewa) ? sewa : null;
     }
 
     public Sewa buatSewaMingguan(String idPelanggan, String kodeHP, int jumlahMinggu) {
         Pelanggan pelanggan = cariPelanggan(idPelanggan);
         Handphone hp = cariHandphone(kodeHP);
 
-        if (pelanggan == null) {
-            return null;
-        }
+        if (pelanggan == null || hp == null) return null;
+        if (!hp.getStatus().equals("TERSEDIA")) return null;
+        if (!SewaMingguan.validasiJumlahMinggu(jumlahMinggu)) return null;
 
-        if (hp == null) {
-            return null;
-        }
-
-        if (!hp.getStatus().equals("TERSEDIA")) {
-            return null;
-        }
-        
-        if (!SewaMingguan.validasiJumlahMinggu(jumlahMinggu)) {
-            return null;
-        }
-
-        SewaMingguan sewa = new SewaMingguan(generateIdSewa(), pelanggan, hp, jumlahMinggu);
-        daftarSewa.add(sewa);
-        hp.setStatus("DISEWA");
-        return sewa;
+        SewaMingguan sewa = new SewaMingguan(sewaDAO.generateId(), pelanggan, hp, jumlahMinggu);
+        return sewaDAO.insert(sewa) ? sewa : null;
     }
 
     public Sewa cariSewa(String idSewa) {
-        if (idSewa == null) {
-            return null;
-        }
-        
-        for (Sewa sewa : daftarSewa) {
-            if (sewa.getIdSewa().equalsIgnoreCase(idSewa)) {
-                return sewa;
-            }
-        }
-
-        return null;
+        return sewaDAO.findById(idSewa);
     }
 
     public boolean kembalikanHandphone(String idSewa) {
-        Sewa sewa = cariSewa(idSewa);
-
-        if (sewa == null) {
-            return false;
-        }
-
-        if (!sewa.getStatus().equals("AKTIF")) {
-            return false;
-        }
-
-        sewa.setStatus("SELESAI");
-        sewa.getHandphone().setStatus("TERSEDIA");
-        return true;
+        return sewaDAO.selesai(idSewa);
     }
 
+    // ================= STATISTIK DASHBOARD =================
     public int hitungHPTersedia() {
         int jumlah = 0;
-
-        for (Handphone hp : daftarHandphone) {
-            if (hp.getStatus().equals("TERSEDIA")) {
-                jumlah++;
-            }
+        for (Handphone hp : hpDAO.findAll()) {
+            if (hp.getStatus().equals("TERSEDIA")) jumlah++;
         }
-
         return jumlah;
     }
 
     public int hitungHPDisewa() {
         int jumlah = 0;
-
-        for (Handphone hp : daftarHandphone) {
-            if (hp.getStatus().equals("DISEWA")) {
-                jumlah++;
-            }
+        for (Handphone hp : hpDAO.findAll()) {
+            if (hp.getStatus().equals("DISEWA")) jumlah++;
         }
         return jumlah;
     }
 
     public int hitungSewaAktif() {
         int jumlah = 0;
-
-        for (Sewa sewa : daftarSewa) {
-            if (sewa.getStatus().equals("AKTIF")) {
-                jumlah++;
-            }
+        for (Sewa s : sewaDAO.findAll()) {
+            if (s.getStatus().equals("AKTIF")) jumlah++;
         }
         return jumlah;
     }

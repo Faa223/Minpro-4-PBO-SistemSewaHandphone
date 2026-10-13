@@ -17,6 +17,12 @@ public class SewaHarian extends Sewa {
         setTotalBiaya(hitungTotal());
     }
 
+    public SewaHarian(String idSewa, Pelanggan pelanggan, Handphone handphone,
+                      int jumlahHari, String status, double totalBiaya) {
+        super(idSewa, pelanggan, handphone, status, totalBiaya);
+        this.jumlahHari = jumlahHari;
+    }
+
     public int getJumlahHari() {
         return jumlahHari;
     }

@@ -19,5 +19,5 @@ public interface CrudPelanggan {
 
     boolean hapusPelanggan(String idPelanggan);
 
-    ArrayList<Pelanggan> getDaftarPelanggan();
+    Pelanggan[] getDaftarPelanggan();
 }

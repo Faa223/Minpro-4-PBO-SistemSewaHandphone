@@ -1,6 +1,10 @@
 C:\Users\ASUS\Downloads\Tugas Kuliah\SistemSewaHandphone\src\main\java\controller\Controller.java
 C:\Users\ASUS\Downloads\Tugas Kuliah\SistemSewaHandphone\src\main\java\controller\CrudHandphone.java
 C:\Users\ASUS\Downloads\Tugas Kuliah\SistemSewaHandphone\src\main\java\controller\CrudPelanggan.java
+C:\Users\ASUS\Downloads\Tugas Kuliah\SistemSewaHandphone\src\main\java\dao\HandphoneDAO.java
+C:\Users\ASUS\Downloads\Tugas Kuliah\SistemSewaHandphone\src\main\java\dao\PelangganDAO.java
+C:\Users\ASUS\Downloads\Tugas Kuliah\SistemSewaHandphone\src\main\java\dao\SewaDAO.java
+C:\Users\ASUS\Downloads\Tugas Kuliah\SistemSewaHandphone\src\main\java\database\Koneksi.java
 C:\Users\ASUS\Downloads\Tugas Kuliah\SistemSewaHandphone\src\main\java\main\Main.java
 C:\Users\ASUS\Downloads\Tugas Kuliah\SistemSewaHandphone\src\main\java\model\Handphone.java
 C:\Users\ASUS\Downloads\Tugas Kuliah\SistemSewaHandphone\src\main\java\model\Pelanggan.java
