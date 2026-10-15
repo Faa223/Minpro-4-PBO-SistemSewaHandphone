@@ -25,7 +25,7 @@
 
 ## <b>1. Deskripsi Singkat Program</b>
 
-Sistem Sewa Handphone merupakan program berbasis Java yang digunakan untuk mengelola data handphone, data pelanggan, serta proses penyewaan dan pengembalian handphone. Program dijalankan melalui console dan menggunakan <b>ArrayList</b> sebagai tempat penyimpanan data selama program berjalan.
+Sistem Sewa Handphone merupakan program berbasis Java yang digunakan untuk mengelola data handphone, data pelanggan, serta proses penyewaan dan pengembalian handphone. Program dijalankan melalui console dan menggunakan database <b>MySQL</b> yang dihubungkan melalui <b>JDBC</b> dengan pola <b>DAO</b> sebagai tempat penyimpanan data.
 
 Program dikembangkan menggunakan konsep <b>Object Oriented Programming (OOP)</b> dan menerapkan struktur <b>MVC (Model, View, Controller)</b> agar kode program lebih terstruktur dan setiap class memiliki fungsi yang jelas.
 
@@ -37,7 +37,7 @@ Program memiliki beberapa fitur utama, yaitu:
 * <b>Pengembalian Handphone</b>, digunakan untuk menyelesaikan transaksi penyewaan yang masih aktif.
 * <b>Riwayat Penyewaan</b>, digunakan untuk melihat seluruh transaksi penyewaan yang pernah dilakukan.
 
-Program juga menerapkan <b>validasi input, access modifier, encapsulation, inheritance, polymorphism, method overriding, ID otomatis, Inteface, dan dummy data</b>.
+Program juga menerapkan <b>validasi input, access modifier, encapsulation, inheritance, polymorphism, method overriding, ID otomatis, Interface, JDBC, Prepared Statement, DAO, dan dummy data dari database</b>.
 
 ---
 
@@ -49,7 +49,7 @@ Program menerapkan struktur <b>MVC (Model, View, Controller)</b> dengan memisahk
   <b>Gambar 1. Struktur Package Program</b>
 
 <p align="left">
-<img width="410" height="529" alt="Screenshot 2026-10-06 191122" src="https://github.com/user-attachments/assets/0004d7e2-71f8-4bdc-ba94-ab4cf2649bee" />
+<img width="309" height="584" alt="Screenshot 2026-10-15 114556" src="https://github.com/user-attachments/assets/895255c9-c20b-4cbc-974f-1288ea28de17" />
 
 </p>
 
@@ -73,7 +73,7 @@ Package <b>controller</b> berisi class `Controller` yang digunakan untuk mengatu
 
 Interface <b>CrudHandphone</b> digunakan untuk menentukan method yang berkaitan dengan pengelolaan data handphone, seperti menambah, mencari, mengubah, menghapus, dan mengambil daftar handphone. Sedangkan interface <b>CrudPelanggan</b> digunakan untuk menentukan method pengelolaan data pelanggan, seperti menambah, mencari, mengubah, menghapus, dan mengambil daftar pelanggan.
 
-Controller mengelola `ArrayList` Handphone, Pelanggan, dan Sewa. Controller juga menangani pembuatan ID otomatis, pencarian data, pengecekan data duplikat, proses penyewaan, pengembalian handphone, serta perubahan status data.
+Controller memanggil class <b>DAO</b> untuk membaca dan menyimpan data Handphone, Pelanggan, dan Sewa ke database. Controller juga menangani pemanggilan pembuatan ID otomatis, pencarian data, pengecekan data duplikat, proses penyewaan, pengembalian handphone, serta perubahan status data.
 
 Dengan demikian, Controller menjadi penghubung antara data pada Model dengan tampilan dan input yang terdapat pada View, sekaligus menjadi tempat implementasi method yang telah ditentukan oleh interface `CrudHandphone` dan `CrudPelanggan`.
 
@@ -87,7 +87,7 @@ View bertugas menampilkan menu, menerima input pengguna, menampilkan data, membe
 
 ## <b>3. Penjelasan Alur Program</b>
 
-Ketika program pertama kali dijalankan, class Main membuat objek Controller dan View. Controller terlebih dahulu membuat beberapa <b>dummy data</b> Handphone dan Pelanggan sehingga data dapat langsung ditampilkan tanpa harus melakukan input dari awal.
+Ketika program pertama kali dijalankan, class Main membuat objek Controller dan View. Data awal (<b>dummy data</b>) Handphone, Pelanggan, dan satu riwayat sewa sudah tersimpan di database melalui file `sewa_hp.sql` sehingga data dapat langsung ditampilkan tanpa harus melakukan input dari awal.
 
 Setelah itu sistem menampilkan dashboard dan Menu Utama.
 
@@ -136,7 +136,7 @@ Menu ini terdiri dari:
 
 Pada proses tambah handphone, pengguna memasukkan merk, tipe, dan harga sewa per hari. Kode HP tidak perlu dimasukkan secara manual karena dibuat secara otomatis oleh sistem dengan format seperti HP001, HP002, dan seterusnya.
 
-Input akan diperiksa terlebih dahulu melalui validasi pada class Handphone. Setelah seluruh data valid, sistem meminta konfirmasi sebelum data disimpan ke dalam ArrayList. Dan juga ketika menginput merek ataupun tipe menggunakan angka dia akan gagal.
+Input akan diperiksa terlebih dahulu melalui validasi pada class Handphone. Setelah seluruh data valid, sistem meminta konfirmasi sebelum data disimpan ke database. Dan juga ketika menginput merek ataupun tipe menggunakan angka dia akan gagal.
 
 <p align="center">
   <b>Gambar 4. Proses Tambah Handphone</b>
@@ -223,7 +223,7 @@ Sistem melakukan validasi nama, nomor HP, dan NIK. Nomor HP harus diawali '08', 
 
 #### <b>B. Lihat Pelanggan</b>
 
-Menu Lihat Pelanggan menampilkan seluruh pelanggan yang telah tersimpan di dalam ArrayList.
+Menu Lihat Pelanggan menampilkan seluruh pelanggan yang telah tersimpan di database.
 
 Informasi yang ditampilkan meliputi ID pelanggan, nama, nomor HP, dan NIK.
 
@@ -277,7 +277,7 @@ Selanjutnya pengguna memilih jenis penyewaan:
 
 Setelah jenis dan durasi dipilih, sistem menghitung total biaya penyewaan secara otomatis dan menampilkan detail transaksi untuk dikonfirmasi.
 
-Jika penyewaan dikonfirmasi, sistem membuat ID sewa secara otomatis dengan format seperti 'SW001', menyimpan transaksi ke dalam ArrayList Sewa, dan mengubah status handphone dari <b>TERSEDIA</b> menjadi <b>DISEWA</b>.
+Jika penyewaan dikonfirmasi, sistem membuat ID sewa secara otomatis dengan format seperti 'SW001', menyimpan transaksi ke tabel `sewa` di database, dan mengubah status handphone dari <b>TERSEDIA</b> menjadi <b>DISEWA</b>.
 
 <p align="center">
   <b>Gambar 13. Konfirmasi Penyewaan Handphone</b>
@@ -431,7 +431,7 @@ Sedangkan pada 'SewaMingguan', total biaya dihitung berdasarkan jumlah minggu da
 
 ---
 
-## <b>6. Penerapan Polymorphism dan Method Overriding</b>
+## <b>6. Penerapan Polymorphism</b>
 
 Program juga menerapkan <b>polymorphism</b> dan <b>method overriding</b> sebagai nilai tambah.
 
@@ -510,75 +510,228 @@ Penerapan MVC membuat setiap class memiliki tanggung jawab yang lebih jelas sehi
 ---
 
 
-# Nilai Tambah Keren
+## <b>9. Integrasi Database dengan JDBC dan DAO</b>
 
-### <b>8.2 Penerapan Interface</b>
+Pada tahap ini, penyimpanan data tidak lagi memakai `ArrayList` di dalam program, tetapi dipindahkan ke database <b>MySQL</b>. Program terhubung ke database menggunakan <b>JDBC</b> dengan <b>Prepared Statement</b>, dan seluruh akses database dipisahkan ke dalam class <b>DAO (Data Access Object)</b>.
 
-Program menerapkan <b>interface</b> sebagai kontrak yang menentukan method CRUD yang harus tersedia dalam proses pengelolaan data handphone dan pelanggan.
+Dengan perubahan ini, data tetap tersimpan walaupun program dihentikan dan dijalankan kembali.
 
-Program memiliki dua interface, yaitu <b>CrudHandphone</b> dan <b>CrudPelanggan</b>.
+### <b>9.1 Alat yang Digunakan</b>
 
-Interface <b>CrudHandphone</b> digunakan untuk menentukan operasi CRUD yang berkaitan dengan data handphone, yaitu:
+| Komponen | Keterangan |
+|---|---|
+| Database | Laragon |
+| Pengelola database | HeidiSQL (bawaan Laragon) |
+| Driver | MySQL Connector/J 8.4.0, ditambahkan lewat `pom.xml` (Maven) |
+| IDE | Apache NetBeans |
 
-* `tambahHandphone()`
-* `cariHandphone()`
-* `ubahHandphone()`
-* `hapusHandphone()`
-* `getDaftarHandphone()`
+Driver ditambahkan pada `pom.xml` sehingga Maven mengunduhnya otomatis:
 
-Sedangkan interface <b>CrudPelanggan</b> digunakan untuk menentukan operasi CRUD pada data pelanggan, yaitu:
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <version>8.4.0</version>
+    </dependency>
+</dependencies>
+```
 
-* `tambahPelanggan()`
-* `cariPelanggan()`
-* `ubahPelanggan()`
-* `hapusPelanggan()`
-* `getDaftarPelanggan()`
+### <b>9.2 Struktur Package Setelah Integrasi</b>
 
-Kedua interface tersebut kemudian diimplementasikan oleh class <b>Controller</b> menggunakan keyword `implements`.
+Struktur MVC tetap dipertahankan. Ditambahkan dua package baru, yaitu `dao` dan `database`, serta satu file SQL.
 
-Setiap method yang berasal dari interface kemudian diimplementasikan kembali pada class `Controller` menggunakan annotation `@Override`.
+```
+src/main/java/
+├── main/         Main
+├── model/        Handphone, Pelanggan, Sewa, SewaHarian, SewaMingguan
+├── view/         View
+├── controller/   Controller, CrudHandphone, CrudPelanggan
+├── dao/          HandphoneDAO, PelangganDAO, SewaDAO        (BARU)
+└── database/     Koneksi                                    (BARU)
+database/
+└── sewa_hp.sql   skema tabel + dummy data                   (BARU)
+```
 
-Contohnya:
+<p align="center">
+  <b>Gambar 26. Struktur Package Setelah Integrasi Database</b>
+<p align="left">
+
+<!-- TEMPEL SCREENSHOT struktur package di panel Projects NetBeans -->
+
+</p>
+
+Alur pemanggilan data sekarang:
+
+```
+View → Controller → DAO → Koneksi → MySQL
+```
+
+* <b>View</b> hanya menampilkan menu dan menerima input.
+* <b>Controller</b> melakukan validasi dan mengatur proses, lalu memanggil DAO.
+* <b>DAO</b> berisi seluruh perintah SQL.
+* <b>Koneksi</b> menyediakan koneksi ke database.
+
+### <b>9.3 Struktur Database</b>
+
+Database bernama `sewa_hp` dan terdiri dari tiga tabel.
+
+<b>Tabel `handphone`</b>
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| kode_hp | VARCHAR(10) | Primary key, contoh HP001 |
+| merk | VARCHAR(30) | Merk handphone |
+| tipe | VARCHAR(50) | Tipe handphone |
+| harga_sewa | DECIMAL(12,2) | Harga sewa per hari |
+| status | VARCHAR(10) | TERSEDIA atau DISEWA |
+
+<b>Tabel `pelanggan`</b>
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id_pelanggan | VARCHAR(10) | Primary key, contoh P001 |
+| nama | VARCHAR(50) | Nama pelanggan |
+| no_hp | VARCHAR(15) | Unique |
+| nik | CHAR(16) | Unique |
+
+<b>Tabel `sewa`</b>
+
+| Kolom | Tipe | Keterangan |
+|---|---|---|
+| id_sewa | VARCHAR(10) | Primary key, contoh SW001 |
+| id_pelanggan | VARCHAR(10) | Foreign key ke `pelanggan` |
+| kode_hp | VARCHAR(10) | Foreign key ke `handphone` |
+| jenis | VARCHAR(10) | HARIAN atau MINGGUAN |
+| durasi | INT | Jumlah hari atau jumlah minggu |
+| total_biaya | DECIMAL(14,2) | Total biaya saat transaksi dibuat |
+| status | VARCHAR(10) | AKTIF atau SELESAI |
+
+Relasi antar tabel:
+
+```mermaid
+erDiagram
+    PELANGGAN ||--o{ SEWA : melakukan
+    HANDPHONE ||--o{ SEWA : disewa
+    PELANGGAN {
+        varchar id_pelanggan PK
+        varchar nama
+        varchar no_hp
+        char nik
+    }
+    HANDPHONE {
+        varchar kode_hp PK
+        varchar merk
+        varchar tipe
+        decimal harga_sewa
+        varchar status
+    }
+    SEWA {
+        varchar id_sewa PK
+        varchar id_pelanggan FK
+        varchar kode_hp FK
+        varchar jenis
+        int durasi
+        decimal total_biaya
+        varchar status
+    }
+```
+
+Foreign key membuat database ikut menjaga aturan program: handphone atau pelanggan yang sudah punya riwayat sewa tidak dapat dihapus.
+
+<p align="center">
+  <b>Gambar 27. Tabel pada Database sewa_hp</b>
+<p align="left">
+
+<!-- TEMPEL SCREENSHOT daftar 3 tabel di HeidiSQL -->
+
+</p>
+
+### <b>9.4 Dummy Data dari File SQL</b>
+
+Data awal <b>tidak diisi lewat kode program</b>. Method `isiDataAwal()` pada `Controller` sudah dihapus. Seluruh data awal berada di file `database/sewa_hp.sql` pada bagian `INSERT`:
+
+```sql
+INSERT INTO handphone (kode_hp, merk, tipe, harga_sewa, status) VALUES
+('HP001', 'Samsung', 'Galaxy S23',    100000, 'TERSEDIA'),
+('HP002', 'Apple',   'iPhone 14',     150000, 'TERSEDIA'),
+('HP003', 'Xiaomi',  'Redmi Note 13',  75000, 'TERSEDIA');
+
+INSERT INTO pelanggan (id_pelanggan, nama, no_hp, nik) VALUES
+('P001', 'Pompom',     '081234567890', '6472010101010001'),
+('P002', 'Yahya SOTM', '082345678901', '6472010202020002');
+
+INSERT INTO sewa (id_sewa, id_pelanggan, kode_hp, jenis, durasi, total_biaya, status) VALUES
+('SW001', 'P001', 'HP001', 'HARIAN', 3, 300000, 'SELESAI');
+```
+
+Dengan data ini, saat fitur <b>Lihat Handphone</b>, <b>Lihat Pelanggan</b>, dan <b>Riwayat Penyewaan</b> dijalankan, data langsung tampil tanpa input dari awal.
+
+Satu riwayat sewa dibuat berstatus `SELESAI` sehingga ketiga handphone tetap berstatus `TERSEDIA` dan siap dipakai untuk uji penyewaan.
+
+<p align="center">
+  <b>Gambar 28. Dummy Data pada Tabel Database</b>
+<p align="left">
+
+<img width="858" height="136" alt="Screenshot 2026-10-12 200843" src="https://github.com/user-attachments/assets/227b39f0-e54b-4ed8-81c8-06f6eee32e7b" /><img width="894" height="211" alt="Screenshot 2026-10-12 200835" src="https://github.com/user-attachments/assets/0aae8b42-613f-4ab4-bfd8-6136a2168dfd" />
+<img width="932" height="93" alt="Screenshot 2026-10-12 200901" src="https://github.com/user-attachments/assets/8e627cd4-aac9-43d3-95d0-c23bfe713ca1" />
+>
+
+</p>
+
+### <b>9.5 Class Koneksi</b>
+
+Package <b>database</b> berisi class `Koneksi` yang menyediakan koneksi ke MySQL.
 
 ```java
-@Override
-public boolean ubahHandphone(String kodeHP, String merk, String tipe, double harga) {
-    Handphone hp = cariHandphone(kodeHP);
+public class Koneksi {
+    private static final String URL  = "jdbc:mysql://localhost:3306/db_sewa_hp";
+    private static final String USER = "root";
+    private static final String PASS = "";
 
-    if (hp == null) {
-        return false;
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASS);
     }
-
-    // proses perubahan data
 }
 ```
 
-Penerapan interface membuat program memiliki struktur CRUD yang lebih jelas karena interface berfungsi sebagai kontrak yang menentukan method apa saja yang harus tersedia pada `Controller`.
-
-Interface juga membantu menerapkan <b>abstraction</b> karena interface hanya menentukan method yang harus disediakan tanpa menentukan bagaimana proses di dalam method tersebut dilakukan.
+Setiap method DAO membuka koneksi lewat <b>try-with-resources</b>, sehingga `Connection`, `PreparedStatement`, dan `ResultSet` otomatis ditutup setelah selesai dipakai.
 
 <p align="center">
-  <b>Gambar 23. Interface CrudHandphone</b>
+  <b>Gambar 29. Class Koneksi</b>
 <p align="left">
-<img width="1074" height="561" alt="image" src="https://github.com/user-attachments/assets/91f5993e-0d76-49c5-8025-08fdce2f7339" />
 
+<!-- TEMPEL SCREENSHOT Koneksi.java -->
 
 </p>
 
-<p align="center">
-  <b>Gambar 24. Interface CrudPelanggan</b>
-<p align="left">
-<img width="1054" height="526" alt="image" src="https://github.com/user-attachments/assets/ea6c770d-d931-446d-bf11-86716d566c2c" />
+### <b>9.6 Penerapan DAO</b>
 
+Package <b>dao</b> berisi tiga class, satu untuk setiap tabel:
+
+| Class DAO | Tugas |
+|---|---|
+| `HandphoneDAO` | insert, findByKode, findAll, update, delete, generateKode |
+| `PelangganDAO` | insert, findById, findAll, update, delete, cek NIK dan No HP duplikat, generateId |
+| `SewaDAO` | insert sewa, selesai (pengembalian), findById, findAll, cek riwayat, generateId |
+
+Pemisahan ini membuat `Controller` tidak lagi berisi perintah SQL. Controller cukup memanggil method DAO, misalnya:
+
+```java
+private final HandphoneDAO hpDAO = new HandphoneDAO();
+
+@Override
+public Handphone[] getDaftarHandphone() {
+    return hpDAO.findAll();
+}
+```
+
+Karena nama method pada Controller dan interface `CrudHandphone` serta `CrudPelanggan` tetap sama, tampilan pada `View` hampir tidak berubah. Perubahan di View hanya penyesuaian dari `.size()` ke `.length` dan dari `.isEmpty()` ke `.length == 0`, karena daftar data sekarang dikembalikan dalam bentuk array.
+
+<p align="center">
+  <b>Gambar 30. Class HandphoneDAO</b>
+<p align="left">
+
+<!-- TEMPEL SCREENSHOT HandphoneDAO.java -->
 
 </p>
-
-<p align="center">
-  <b>Gambar 25. Implementasi Interface pada Controller</b>
-<p align="left">
-<img width="667" height="173" alt="image" src="https://github.com/user-attachments/assets/8f66814c-633a-436c-95f9-d1b24424f8c5" />
-
-
-</p>
-
----
