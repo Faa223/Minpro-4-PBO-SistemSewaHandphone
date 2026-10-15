@@ -49,7 +49,7 @@ Program menerapkan struktur <b>MVC (Model, View, Controller)</b> dengan memisahk
   <b>Gambar 1. Struktur Package Program</b>
 
 <p align="left">
-<img width="309" height="584" alt="Screenshot 2026-10-15 114556" src="https://github.com/user-attachments/assets/895255c9-c20b-4cbc-974f-1288ea28de17" />
+<img width="410" height="529" alt="Screenshot 2026-10-06 191122" src="https://github.com/user-attachments/assets/0004d7e2-71f8-4bdc-ba94-ab4cf2649bee" />
 
 </p>
 
@@ -516,28 +516,7 @@ Pada tahap ini, penyimpanan data tidak lagi memakai `ArrayList` di dalam program
 
 Dengan perubahan ini, data tetap tersimpan walaupun program dihentikan dan dijalankan kembali.
 
-### <b>9.1 Alat yang Digunakan</b>
-
-| Komponen | Keterangan |
-|---|---|
-| Database | Laragon |
-| Pengelola database | HeidiSQL (bawaan Laragon) |
-| Driver | MySQL Connector/J 8.4.0, ditambahkan lewat `pom.xml` (Maven) |
-| IDE | Apache NetBeans |
-
-Driver ditambahkan pada `pom.xml` sehingga Maven mengunduhnya otomatis:
-
-```xml
-<dependencies>
-    <dependency>
-        <groupId>com.mysql</groupId>
-        <artifactId>mysql-connector-j</artifactId>
-        <version>8.4.0</version>
-    </dependency>
-</dependencies>
-```
-
-### <b>9.2 Struktur Package Setelah Integrasi</b>
+### <b>9.1 Struktur Package Setelah Integrasi</b>
 
 Struktur MVC tetap dipertahankan. Ditambahkan dua package baru, yaitu `dao` dan `database`, serta satu file SQL.
 
@@ -554,10 +533,10 @@ database/
 ```
 
 <p align="center">
-  <b>Gambar 26. Struktur Package Setelah Integrasi Database</b>
+  <b>Gambar 22. Struktur Package Setelah Integrasi Database</b>
 <p align="left">
 
-<!-- TEMPEL SCREENSHOT struktur package di panel Projects NetBeans -->
+<img width="305" height="727" alt="Screenshot 2026-10-15 201629" src="https://github.com/user-attachments/assets/ca2f90b3-8f88-4729-9eb7-988bc573ebf7" />
 
 </p>
 
@@ -572,82 +551,7 @@ View → Controller → DAO → Koneksi → MySQL
 * <b>DAO</b> berisi seluruh perintah SQL.
 * <b>Koneksi</b> menyediakan koneksi ke database.
 
-### <b>9.3 Struktur Database</b>
-
-Database bernama `sewa_hp` dan terdiri dari tiga tabel.
-
-<b>Tabel `handphone`</b>
-
-| Kolom | Tipe | Keterangan |
-|---|---|---|
-| kode_hp | VARCHAR(10) | Primary key, contoh HP001 |
-| merk | VARCHAR(30) | Merk handphone |
-| tipe | VARCHAR(50) | Tipe handphone |
-| harga_sewa | DECIMAL(12,2) | Harga sewa per hari |
-| status | VARCHAR(10) | TERSEDIA atau DISEWA |
-
-<b>Tabel `pelanggan`</b>
-
-| Kolom | Tipe | Keterangan |
-|---|---|---|
-| id_pelanggan | VARCHAR(10) | Primary key, contoh P001 |
-| nama | VARCHAR(50) | Nama pelanggan |
-| no_hp | VARCHAR(15) | Unique |
-| nik | CHAR(16) | Unique |
-
-<b>Tabel `sewa`</b>
-
-| Kolom | Tipe | Keterangan |
-|---|---|---|
-| id_sewa | VARCHAR(10) | Primary key, contoh SW001 |
-| id_pelanggan | VARCHAR(10) | Foreign key ke `pelanggan` |
-| kode_hp | VARCHAR(10) | Foreign key ke `handphone` |
-| jenis | VARCHAR(10) | HARIAN atau MINGGUAN |
-| durasi | INT | Jumlah hari atau jumlah minggu |
-| total_biaya | DECIMAL(14,2) | Total biaya saat transaksi dibuat |
-| status | VARCHAR(10) | AKTIF atau SELESAI |
-
-Relasi antar tabel:
-
-```mermaid
-erDiagram
-    PELANGGAN ||--o{ SEWA : melakukan
-    HANDPHONE ||--o{ SEWA : disewa
-    PELANGGAN {
-        varchar id_pelanggan PK
-        varchar nama
-        varchar no_hp
-        char nik
-    }
-    HANDPHONE {
-        varchar kode_hp PK
-        varchar merk
-        varchar tipe
-        decimal harga_sewa
-        varchar status
-    }
-    SEWA {
-        varchar id_sewa PK
-        varchar id_pelanggan FK
-        varchar kode_hp FK
-        varchar jenis
-        int durasi
-        decimal total_biaya
-        varchar status
-    }
-```
-
-Foreign key membuat database ikut menjaga aturan program: handphone atau pelanggan yang sudah punya riwayat sewa tidak dapat dihapus.
-
-<p align="center">
-  <b>Gambar 27. Tabel pada Database sewa_hp</b>
-<p align="left">
-
-<!-- TEMPEL SCREENSHOT daftar 3 tabel di HeidiSQL -->
-
-</p>
-
-### <b>9.4 Dummy Data dari File SQL</b>
+### <b>9.2 Dummy Data dari File SQL</b>
 
 Data awal <b>tidak diisi lewat kode program</b>. Method `isiDataAwal()` pada `Controller` sudah dihapus. Seluruh data awal berada di file `database/sewa_hp.sql` pada bagian `INSERT`:
 
@@ -670,7 +574,7 @@ Dengan data ini, saat fitur <b>Lihat Handphone</b>, <b>Lihat Pelanggan</b>, dan 
 Satu riwayat sewa dibuat berstatus `SELESAI` sehingga ketiga handphone tetap berstatus `TERSEDIA` dan siap dipakai untuk uji penyewaan.
 
 <p align="center">
-  <b>Gambar 28. Dummy Data pada Tabel Database</b>
+  <b>Gambar 23. Dummy Data pada Tabel Database</b>
 <p align="left">
 
 <img width="858" height="136" alt="Screenshot 2026-10-12 200843" src="https://github.com/user-attachments/assets/227b39f0-e54b-4ed8-81c8-06f6eee32e7b" /><img width="894" height="211" alt="Screenshot 2026-10-12 200835" src="https://github.com/user-attachments/assets/0aae8b42-613f-4ab4-bfd8-6136a2168dfd" />
@@ -679,7 +583,7 @@ Satu riwayat sewa dibuat berstatus `SELESAI` sehingga ketiga handphone tetap ber
 
 </p>
 
-### <b>9.5 Class Koneksi</b>
+### <b>9.3 Class Koneksi</b>
 
 Package <b>database</b> berisi class `Koneksi` yang menyediakan koneksi ke MySQL.
 
@@ -698,14 +602,14 @@ public class Koneksi {
 Setiap method DAO membuka koneksi lewat <b>try-with-resources</b>, sehingga `Connection`, `PreparedStatement`, dan `ResultSet` otomatis ditutup setelah selesai dipakai.
 
 <p align="center">
-  <b>Gambar 29. Class Koneksi</b>
+  <b>Gambar 24. Class Koneksi</b>
 <p align="left">
 
 <img width="812" height="214" alt="Screenshot 2026-10-12 201221" src="https://github.com/user-attachments/assets/88103947-b040-44fe-a097-d0c547d0e005" />
 
 </p>
 
-### <b>9.6 Penerapan DAO</b>
+### <b>9.4 Penerapan DAO</b>
 
 Package <b>dao</b> berisi tiga class, satu untuk setiap tabel:
 
@@ -729,9 +633,9 @@ public Handphone[] getDaftarHandphone() {
 Karena nama method pada Controller dan interface `CrudHandphone` serta `CrudPelanggan` tetap sama, tampilan pada `View` hampir tidak berubah. Perubahan di View hanya penyesuaian dari `.size()` ke `.length` dan dari `.isEmpty()` ke `.length == 0`, karena daftar data sekarang dikembalikan dalam bentuk array.
 
 <p align="center">
-  <b>Gambar 30. Class HandphoneDAO</b>
+  <b>Gambar 25. Class HandphoneDAO</b>
 <p align="left">
 
-<!-- TEMPEL SCREENSHOT HandphoneDAO.java -->
+<img width="305" height="727" alt="Screenshot 2026-10-15 201629" src="https://github.com/user-attachments/assets/a0e5b3fa-651e-40c8-8550-c5677ac2c4b2" />
 
 </p>
