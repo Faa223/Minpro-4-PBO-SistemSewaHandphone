@@ -512,25 +512,13 @@ Penerapan MVC membuat setiap class memiliki tanggung jawab yang lebih jelas sehi
 
 ## <b>9. Integrasi Database dengan JDBC dan DAO</b>
 
-Pada tahap ini, penyimpanan data tidak lagi memakai `ArrayList` di dalam program, tetapi dipindahkan ke database <b>MySQL</b>. Program terhubung ke database menggunakan <b>JDBC</b> dengan <b>Prepared Statement</b>, dan seluruh akses database dipisahkan ke dalam class <b>DAO (Data Access Object)</b>.
+Di tahap ini, penyimpanan data tidak lagi memakai `ArrayList` di dalam program, tetapi dipindahkan ke database <b>MySQL</b>. Program terhubung ke database menggunakan <b>JDBC</b> dengan <b>Prepared Statement</b>, dan seluruh akses database dipisahkan ke dalam class <b>DAO (Data Access Object)</b>.
 
 Dengan perubahan ini, data tetap tersimpan walaupun program dihentikan dan dijalankan kembali.
 
 ### <b>9.1 Struktur Package Setelah Integrasi</b>
 
-Struktur MVC tetap dipertahankan. Ditambahkan dua package baru, yaitu `dao` dan `database`, serta satu file SQL.
-
-```
-src/main/java/
-├── main/         Main
-├── model/        Handphone, Pelanggan, Sewa, SewaHarian, SewaMingguan
-├── view/         View
-├── controller/   Controller, CrudHandphone, CrudPelanggan
-├── dao/          HandphoneDAO, PelangganDAO, SewaDAO        (BARU)
-└── database/     Koneksi                                    (BARU)
-database/
-└── sewa_hp.sql   skema tabel + dummy data                   (BARU)
-```
+Struktur MVC sebelumnya tetap dipertahankan. Dan ditambahkan dua package baru, yaitu `dao` dan `database`, serta satu file SQL.
 
 <p align="center">
   <b>Gambar 22. Struktur Package Setelah Integrasi Database</b>
@@ -636,6 +624,6 @@ Karena nama method pada Controller dan interface `CrudHandphone` serta `CrudPela
   <b>Gambar 25. Class HandphoneDAO</b>
 <p align="left">
 
-<img width="305" height="727" alt="Screenshot 2026-10-15 201629" src="https://github.com/user-attachments/assets/a0e5b3fa-651e-40c8-8550-c5677ac2c4b2" />
+<img width="1919" height="1099" alt="Screenshot 2026-10-15 205019" src="https://github.com/user-attachments/assets/244c68bd-9b17-4b5d-a962-bf6edf1a8ee4" />
 
 </p>
