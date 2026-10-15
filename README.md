@@ -685,7 +685,7 @@ Package <b>database</b> berisi class `Koneksi` yang menyediakan koneksi ke MySQL
 
 ```java
 public class Koneksi {
-    private static final String URL  = "jdbc:mysql://localhost:3306/db_sewa_hp";
+    private static final String URL  = "jdbc:mysql://localhost:3306/sewa_hp";
     private static final String USER = "root";
     private static final String PASS = "";
 
@@ -701,7 +701,7 @@ Setiap method DAO membuka koneksi lewat <b>try-with-resources</b>, sehingga `Con
   <b>Gambar 29. Class Koneksi</b>
 <p align="left">
 
-<!-- TEMPEL SCREENSHOT Koneksi.java -->
+<img width="812" height="214" alt="Screenshot 2026-10-12 201221" src="https://github.com/user-attachments/assets/88103947-b040-44fe-a097-d0c547d0e005" />
 
 </p>
 
